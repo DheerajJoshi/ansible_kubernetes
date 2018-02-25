@@ -1,0 +1,4 @@
+---
+
+- name: Add Kubernetes Worker node to cluster
+  command: kubeadm join --token {{ kubernetes_token }} {{ groups['master'][0] }}:6443 --ignore-preflight-errors=all --discovery-token-unsafe-skip-ca-verification

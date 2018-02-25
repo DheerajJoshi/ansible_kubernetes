@@ -1,0 +1,13 @@
+---
+
+- hosts: master
+  remote_user: vagrant
+  become: yes
+  roles:
+    - kubernetes
+
+- hosts: worker
+  remote_user: vagrant
+  become: yes
+  roles:
+    - kubernetes
