@@ -1,5 +1,6 @@
 # Ansible : Playbook Kubernetes
-The aim of this project is to deploy a simple Kubernetes cluster on Vagrant using kubeadm.
+
+The aim of this project is to deploy a Kubernetes cluster on Vagrant instances.
 
 ## Getting Started
 
@@ -9,12 +10,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to run this Ansible playbook :
 
-* [Vagrant](https://www.vagrantup.com/docs/installation/) must be installed on your computer
-* Update the Vagrant file based on your computer (CPU, memory), if needed
-* You must have download the ubuntu Xenial64 vagrant box :
+*   [Vagrant](https://www.vagrantup.com/docs/installation/) must be installed on your computer
+*   Update the Vagrant file based on your computer (CPU, memory), if needed
+*   Update the operating system to deploy in the Vagrant file (default: Ubuntu)
+*   Download the Ansible requirements:
 
-```
-vagrant box add https://app.vagrantup.com/ubuntu/boxes/xenial64
+```bash
+$ ansible-galaxy install -r requirements.yml
 ```
 
 ### Usage
@@ -23,56 +25,80 @@ A good point with Vagrant is that you can create, update and destroy all archite
 
 Be aware that you need to be in the Vagrant directory to be able to run the commands.
 
-#### Build Environment
+#### Deployment
 
-Vagrant needs to init the project to run and build it :
+To deploy Kubernetes on Vagrant instances, just run this command :
 
-```
-vagrant up
-```
-
-After build, you can check which virtual machine Vagrant has created :
-
-```
-vagrant status
+```bash
+$ vagrant up
 ```
 
-If all run like it is expected, you should see something like this :
+If everything run as expected, you should be able to list the virtual machine created :
 
-```
+```bash
 $ vagrant status
 
 Current machine states:
 
-k8s-master01                  running (virtualbox)
-k8s-worker01                  running (virtualbox)
+kubernetes01                   running (virtualbox)
+kubernetes02                   running (virtualbox)
+kubernetes03                   running (virtualbox)
 ```
 
-#### Deployment
+If everything run as expected, you should list the active nodes with this command:
 
-To deploy the Kubernetes cluster, you just have to run the Ansible playbook kubernetes.yml with this command :
-
-```
-ansible-playbook kubernetes.yml
-```
-
-If all run like it is expected, you should list the active nodes with this command:
-
-```
+```bash
 $ kubectl get node
 NAME           STATUS    ROLES     AGE       VERSION
-k8s-master01   Ready     master    2h        v1.9.3
-k8s-worker01   Ready     <none>    2h        v1.9.3
+kubernetes01   Ready     master    2h        v1.12.2
+kubernetes02   Ready     <none>    2h        v1.12.2
+kubernetes03   Ready     <none>    2h        v1.12.2
 ```
+
+For information, Flannel CNI is deployed by default to manage the Kubernetes networks.
+
+The dashboard is deployed by default but the UI access and the autentication is not managed yet.
 
 #### Destroy
 
-To destroy on what Vagrant has created, just run this command :
+To destroy the Vagrant resources created, just run this command :
 
+```bash
+$ vagrant destroy
 ```
-vagrant destroy
+
+### How-To
+
+This section list some simple command to use and manage the playbook and the Vagrant hosts.
+
+#### Update with Ansible
+
+To update the Kubernetes cluster configuration with Ansible, you just have to run the Ansible playbook kubernetes.yml with this command :
+
+```bash
+$ ansible-playbook kubernetes.yml
+```
+
+#### Update with Vagrant
+
+To update the Kubernetes cluster configuration with Vagrant, you just have to run provisioning part of the Vagrant file :
+
+```bash
+$ vagrant provision
+```
+
+#### Connect to Vagrant instance
+
+To be able to connect to a Vagrant instance, you should use the CLI which is configured to automatically use the default SSH key :
+
+```bash
+$ vagrant ssh kubernetes01
 ```
 
 ## Author
 
 Member of Wikitops : https://www.wikitops.io/
+
+## Licence
+
+This project is licensed under the Apache License, Version 2.0. For the full text of the license, see the LICENSE file.

@@ -1,13 +1,12 @@
 ---
 
-- hosts: master
+- hosts: kubernetes
   remote_user: vagrant
   become: yes
   roles:
-    - kubernetes
-
-- hosts: worker
-  remote_user: vagrant
-  become: yes
-  roles:
-    - kubernetes
+    - name: kubernetes/cluster
+      tags: update-kubernetes
+    - name: kubernetes/cni
+      tags: update-kubernetes-cni
+    - name: kubernetes/dashboard
+      tags: update-kubernetes-dashboard
